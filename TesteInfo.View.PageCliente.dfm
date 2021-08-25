@@ -116,12 +116,9 @@ object frmPageCliente: TfrmPageCliente
     ActivePage = tsPageCadastro
     Align = alClient
     TabOrder = 2
-    ExplicitTop = 6
-    ExplicitHeight = 542
     object tsPageListagem: TTabSheet
       Caption = 'tsPageListagem'
       TabVisible = False
-      ExplicitHeight = 532
       object Panel3: TPanel
         Left = 0
         Top = 0
@@ -212,7 +209,6 @@ object frmPageCliente: TfrmPageCliente
       Caption = 'tsPageCadastro'
       ImageIndex = 1
       TabVisible = False
-      ExplicitHeight = 532
       object Label8: TLabel
         Left = 8
         Top = 17
@@ -261,7 +257,6 @@ object frmPageCliente: TfrmPageCliente
         Align = alBottom
         Caption = 'Endere'#231'o'
         TabOrder = 0
-        ExplicitTop = 232
         object Label1: TLabel
           Left = 16
           Top = 34
@@ -274,6 +269,7 @@ object frmPageCliente: TfrmPageCliente
           Top = 48
           Width = 23
           Height = 22
+          OnClick = SpeedButton7Click
         end
         object Label2: TLabel
           Left = 16

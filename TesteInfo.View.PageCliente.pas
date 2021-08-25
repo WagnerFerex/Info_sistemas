@@ -62,9 +62,12 @@ type
     procedure btnEditarClick(Sender: TObject);
     procedure btnSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure SpeedButton7Click(Sender: TObject);
   private
     FSituacao: eSituacao;
     FDataSet: TDataSet;
+    procedure EnviarEmail();
+    procedure HabDesEndereco(Logradouro, Complemento, Localidade, UF, Bairro: string);
     procedure SetSituacao(const Value: eSituacao);
     property Situacao: eSituacao read FSituacao write SetSituacao;
   public
@@ -77,6 +80,13 @@ var
 implementation
 
 {$R *.dfm}
+
+uses
+  System.MaskUtils,
+  System.StrUtils,
+  TesteInfo.Model.ViaCEP,
+  TesteInfo.Model.eMail, TesteInfo.Model.Utils;
+
 
 procedure TfrmPageCliente.btnCancelarClick(Sender: TObject);
 begin
@@ -114,14 +124,21 @@ end;
 
 procedure TfrmPageCliente.btnSalvarClick(Sender: TObject);
 begin
-  FDataSet.FieldByName('CEP').Value := ;
-  FDataSet.FieldByName('').Value := ;
-  FDataSet.FieldByName('').Value := ;
-  FDataSet.FieldByName('').Value := ;
-  FDataSet.FieldByName('').Value := ;
-  FDataSet.FieldByName('').Value := ;
-  FDataSet.Post;
-  Situacao := stList;
+  try
+    FDataSet.FieldByName('CEP').Value         := Trim(edtCEP.Text);
+    FDataSet.FieldByName('Logradouro').Value  := Trim(edtLogradouro.Text);
+    FDataSet.FieldByName('Numero').Value      := Trim(edtNumero.Text);
+    FDataSet.FieldByName('Complemento').Value := Trim(edtComplemento.Text);
+    FDataSet.FieldByName('Bairro').Value      := Trim(edtBairro.Text);
+    FDataSet.FieldByName('Cidade').Value      := Trim(edtCidade.Text);
+    FDataSet.FieldByName('Estado').Value      := Trim(edtUF.Text);
+    FDataSet.FieldByName('Pais').Value        := Trim(edtPais.Text);
+    FDataSet.Post;
+    Situacao := stList;
+  except
+    on E: Exception do
+      Application.MessageBox(PChar(E.Message), 'TesteInfo - Informação!', MB_ICONINFORMATION);
+  end;
 end;
 
 procedure TfrmPageCliente.dsrCLIENTEStateChange(Sender: TObject);
@@ -149,11 +166,66 @@ begin
   btnCancelar.Enabled := (FDataSet.State in [dsInsert, dsEdit]) and (not dsrCLIENTE.DataSet.IsEmpty);
 end;
 
+procedure TfrmPageCliente.EnviarEmail;
+begin
+  TModelEmail
+    .New(465, 'smtp.gmail.com', 'sistemadelphi16122020@gmail.com', 'teste16122020*')
+//      .ReplyToAddress('')
+//      .Attachment('Local do arquivo PDF')
+
+    .Subject('Cadastro de Cliente InfoSistemas')
+    .FromAddress('sistemadelphi16122020@gmail.com')       // remetente
+    .FromName('TESTE INFOSISTEMAS')
+    .RecipientsAddress('sistemadelphi16122020@gmail.com') // destinatário
+
+    .AddBody('<html><head><meta content=''text/html; charset=iso-8859-1'' http-equiv=''Content-Type'' />')
+    .AddBody('<title>EMAIL AUTOMATICO - Cliente '+ '<NOMECLIENTE>' +'</title> </head>')
+    .AddBody('<body bgcolor=''#FFFFFF''>')
+    .AddBody('<p><b> Nome : </b>' + '<NOME_CLIENTE>')
+    .AddBody('<p><b> CPF : </b>' + FormatMaskText('999.999.999-99;0;_', '<CPF_CLIENTE>'))
+    .AddBody('<p><b> Identidade : </b>' + '<RG_CLIENTE>')
+    .AddBody('<p><b> DDD : </b>' + '<DDD>')
+    .AddBody('<p><b> Telefone : </b>' + FormatMaskText('99999-9999;0;_', '<TELEFONE>'))
+    .AddBody('<p><b> E-mail : </b>' + '<EMAIL>')
+    .AddBody('<p><b> CEP : </b>' + FormatMaskText('99.999-999;0;_', '<CEP>'))
+    .AddBody('<p><b> Logradouro : </b>' + '<LOGRADOURO>')
+    .AddBody('<p><b> Número : </b>' + 'NUMERO')
+    .AddBody('<p><b> Complemento : </b>' + 'COMPLEMENTO')
+    .AddBody('<p><b> Bairro : </b>' + '<BAIRRO>')
+    .AddBody('<p><b> Cidade : </b>' + 'CIDADE')
+    .AddBody('<p><b> Estado : </b>' + 'ESTADO')
+    .AddBody('<p><b> País : </b>' + 'PAIS')
+    .AddBody('</body></html>').Send;
+end;
+
 procedure TfrmPageCliente.FormShow(Sender: TObject);
 begin
   pcPrincipal.ActivePage := tsPageListagem;
   FDataSet := dsrCLIENTE.DataSet;
   FDataSet.Open;
+end;
+
+procedure TfrmPageCliente.HabDesEndereco(Logradouro, Complemento, Localidade, UF, Bairro: string);
+begin
+  edtLogradouro.Enabled := Trim(Logradouro).IsEmpty;
+  edtLogradouro.Text    := IfThen(Logradouro <> '', Trim(Logradouro));
+  edtLogradouro.Color   := iif(Logradouro <> '', clBtnFace, clWhite);
+
+  edtComplemento.Enabled := Trim(Complemento).IsEmpty;
+  edtComplemento.Text    := IfThen(Complemento <> '', Trim(Complemento));
+  edtComplemento.Color   := iif(Complemento <> '', clBtnFace, clWhite);
+
+  edtCidade.Enabled := Trim(Localidade).IsEmpty;
+  edtCidade.Text    := IfThen(Localidade <> '', Trim(Localidade));
+  edtCidade.Color   := iif(Localidade <> '', clBtnFace, clWhite);
+
+  edtUF.Enabled := Trim(UF).IsEmpty;
+  edtUF.Text    := IfThen(UF <> '', Trim(UF));
+  edtUF.Color   := iif(UF <> '', clBtnFace, clWhite);
+
+  edtBairro.Enabled := Trim(Bairro).IsEmpty;
+  edtBairro.Text    := IfThen(Bairro <> '', Trim(Bairro));
+  edtBairro.Color   := iif(Bairro <> '', clBtnFace, clWhite);
 end;
 
 procedure TfrmPageCliente.SetSituacao(const Value: eSituacao);
@@ -163,6 +235,25 @@ begin
     stList: pcPrincipal.ActivePage := tsPageListagem;
     stCrud: pcPrincipal.ActivePage := tsPageCadastro;
     stDel: ;
+  end;
+end;
+
+procedure TfrmPageCliente.SpeedButton7Click(Sender: TObject);
+var
+  Result: IBuscaCEP;
+
+begin
+  try
+    Result := TModelViaCEP.New.Buscar(edtCEP.Text);
+    HabDesEndereco(
+      Result.Logradouro,
+      Result.Complemento,
+      Result.Localidade,
+      Result.UF,
+      Result.Bairro);
+  except
+    on E: Exception do
+      Application.MessageBox(PChar(E.Message), 'TesteInfo - Informação!', MB_ICONINFORMATION);
   end;
 end;
 
