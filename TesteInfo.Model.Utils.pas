@@ -48,6 +48,9 @@ var
   I: Integer;
 
 begin
+  if FileExists(ExtractFileDir(ParamStr(0))+'\cliente.xml') then
+     DeleteFile(ExtractFileDir(ParamStr(0))+'\cliente.xml');
+
   aDataSet := TClientDataSet.Create(nil);
   try
     aDataSet.FieldDefs.Assign(DataSet.FieldDefs);
