@@ -7,6 +7,7 @@ uses
 
   function iif(Condicao: Boolean; Valor1, Valor2: Variant): Variant;
   function EnviarEmail(ADataSet: TDataSet): Boolean;
+  function GerarXML(DataSet: TDataSet): Boolean;
   function NotNULL(Value: Variant; Mensagem: string): Variant;
   function eEMail(aStr: string): Boolean;
 
@@ -17,6 +18,7 @@ uses
   System.SysUtils,
   Winapi.Windows,
   Vcl.Forms,
+  Datasnap.DBClient,
   System.MaskUtils,
   TesteInfo.Model.eMail;
 
@@ -33,12 +35,36 @@ function NotNULL(Value: Variant; Mensagem: string): Variant;
 begin
   if Trim(VarToStr(Value)) = '' then
   begin
-//    Application.MessageBox(PChar(Mensagem), 'TesteInfo - Informação!', MB_ICONINFORMATION);
     raise Exception.Create(Mensagem);
     Abort;
   end;
 
   Result := Value;
+end;
+
+function GerarXML(DataSet: TDataSet): Boolean;
+var
+  aDataSet: TClientDataSet;
+  I: Integer;
+
+begin
+  aDataSet := TClientDataSet.Create(nil);
+  try
+    aDataSet.FieldDefs.Assign(DataSet.FieldDefs);
+    aDataSet.CreateDataSet;
+    aDataSet.Append;
+
+    for i :=0 to DataSet.FieldCount - 1 do
+      aDataSet.Fields[i].Value := DataSet.Fields[i].Value;
+
+    aDataSet.Post;
+    aDataSet.SaveToFile(ExtractFileDir(ParamStr(0))+'\cliente.xml', dfXMLUTF8);
+//    (DataSet as TFDMemTable).SaveToFile(ExtractFileDir(ParamStr(0))+'\cliente.xml', sfXML);
+    Result := True;
+  except
+    Result := False;
+  end;
+  aDataSet.DisposeOf;
 end;
 
 function EnviarEmail(ADataSet: TDataSet): Boolean;
@@ -69,6 +95,7 @@ begin
         .AddBody('<p><b> País : </b>' +        ADataSet.FieldByName('Pais').AsString)
         .AddBody('</body></html>')
     .Send;
+  Result := True;
 end;
 
 function eEMail(aStr: string): Boolean;

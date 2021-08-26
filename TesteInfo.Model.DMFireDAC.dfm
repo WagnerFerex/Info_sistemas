@@ -3,6 +3,7 @@ object DMFireDAC: TDMFireDAC
   Height = 317
   Width = 404
   object mtbCLIENTE: TFDMemTable
+    FilterOptions = [foCaseInsensitive]
     FieldDefs = <>
     IndexDefs = <>
     FetchOptions.AssignedValues = [evMode]
@@ -66,9 +67,5 @@ object DMFireDAC: TDMFireDAC
       FieldName = 'Pais'
       Size = 10
     end
-  end
-  object FDStanStorageXMLLink1: TFDStanStorageXMLLink
-    Left = 184
-    Top = 56
   end
 end

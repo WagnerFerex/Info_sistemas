@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  Web.HTTPApp, Web.DBWeb, FireDAC.Stan.StorageXML;
+  Web.HTTPApp, Web.DBWeb;
 
 type
   TDMFireDAC = class(TDataModule)
@@ -24,14 +24,13 @@ type
     mtbCLIENTECidade: TStringField;
     mtbCLIENTEEstado: TStringField;
     mtbCLIENTEPais: TStringField;
-    FDStanStorageXMLLink1: TFDStanStorageXMLLink;
   private
     { Private declarations }
   public
     { Public declarations }
   end;
 
-  function GerarXML(DataSet: TDataSet): Boolean;
+
 
 
 var
@@ -42,24 +41,5 @@ implementation
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
 {$R *.dfm}
-
-function GerarXML(DataSet: TDataSet): Boolean;
-var
-  aDataSet: TFDMemTable;
-
-begin
-  aDataSet := TFDMemTable.Create(nil);
-  try
-    aDataSet.CopyFields(DataSet);
-    aDataSet.CopyRecord(DataSet);
-    aDataSet.SaveToFile(ExtractFileDir(ParamStr(0))+'\cliente.xml', sfXML);
-
-//    (DataSet as TFDMemTable).SaveToFile(FileName, sfXML);
-    Result := True;
-  except
-    Result := False;
-  end;
-  aDataSet.DisposeOf;
-end;
 
 end.

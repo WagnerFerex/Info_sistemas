@@ -3,20 +3,20 @@ object frmPageCliente: TfrmPageCliente
   Top = 0
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
-  Caption = 'Sistema Generico - Teste Info Sistemas'
+  Caption = 'Cadastro de Clientes - Teste Info Sistemas'
   ClientHeight = 619
   ClientWidth = 920
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -11
+  Font.Height = -13
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
   OnShow = FormShow
   PixelsPerInch = 96
-  TextHeight = 13
+  TextHeight = 16
   object Panel1: TPanel
     Left = 0
     Top = 548
@@ -113,7 +113,7 @@ object frmPageCliente: TfrmPageCliente
     Top = 0
     Width = 920
     Height = 548
-    ActivePage = tsPageCadastro
+    ActivePage = tsPageListagem
     Align = alClient
     TabOrder = 2
     object tsPageListagem: TTabSheet
@@ -185,7 +185,6 @@ object frmPageCliente: TfrmPageCliente
           item
             Expanded = False
             FieldName = 'Identidade'
-            Width = 64
             Visible = True
           end
           item
@@ -209,40 +208,40 @@ object frmPageCliente: TfrmPageCliente
       object Label8: TLabel
         Left = 8
         Top = 17
-        Width = 27
-        Height = 13
+        Width = 33
+        Height = 16
         Caption = 'Nome'
         FocusControl = edtNome
       end
       object Label9: TLabel
         Left = 8
         Top = 57
-        Width = 52
-        Height = 13
+        Width = 60
+        Height = 16
         Caption = 'Identidade'
         FocusControl = edtIdentidade
       end
       object Label10: TLabel
         Left = 8
         Top = 98
-        Width = 19
-        Height = 13
+        Width = 22
+        Height = 16
         Caption = 'CPF'
         FocusControl = edtCPF
       end
       object Label11: TLabel
         Left = 8
         Top = 137
-        Width = 42
-        Height = 13
+        Width = 50
+        Height = 16
         Caption = 'Telefone'
         FocusControl = edtTelefone
       end
       object Label12: TLabel
         Left = 8
         Top = 178
-        Width = 24
-        Height = 13
+        Width = 31
+        Height = 16
         Caption = 'Email'
         FocusControl = edtEmail
       end
@@ -257,8 +256,8 @@ object frmPageCliente: TfrmPageCliente
         object Label1: TLabel
           Left = 16
           Top = 34
-          Width = 19
-          Height = 13
+          Width = 22
+          Height = 16
           Caption = 'CEP'
         end
         object SpeedButton7: TSpeedButton
@@ -278,92 +277,92 @@ object frmPageCliente: TfrmPageCliente
         object Label2: TLabel
           Left = 16
           Top = 76
-          Width = 55
-          Height = 13
+          Width = 65
+          Height = 16
           Caption = 'Logradouro'
         end
         object Label3: TLabel
           Left = 143
           Top = 159
-          Width = 65
-          Height = 13
+          Width = 79
+          Height = 16
           Caption = 'Complemento'
         end
         object Label4: TLabel
           Left = 249
           Top = 118
-          Width = 33
-          Height = 13
+          Width = 39
+          Height = 16
           Caption = 'Cidade'
         end
         object Label5: TLabel
           Left = 482
           Top = 118
-          Width = 33
-          Height = 13
+          Width = 38
+          Height = 16
           Caption = 'Estado'
         end
         object Label6: TLabel
           Left = 16
           Top = 118
-          Width = 28
-          Height = 13
+          Width = 34
+          Height = 16
           Caption = 'Bairro'
         end
         object Label7: TLabel
           Left = 16
           Top = 159
-          Width = 37
-          Height = 13
+          Width = 45
+          Height = 16
           Caption = 'Numero'
         end
         object Label13: TLabel
           Left = 484
           Top = 159
-          Width = 19
-          Height = 13
+          Width = 23
+          Height = 16
           Caption = 'Pa'#237's'
         end
         object edtLogradouro: TEdit
           Left = 16
           Top = 90
           Width = 545
-          Height = 21
+          Height = 24
           TabOrder = 1
         end
         object edtComplemento: TEdit
           Left = 143
           Top = 173
           Width = 337
-          Height = 21
+          Height = 24
           TabOrder = 6
         end
         object edtCidade: TEdit
           Left = 249
           Top = 132
           Width = 230
-          Height = 21
+          Height = 24
           TabOrder = 3
         end
         object edtUF: TEdit
           Left = 482
           Top = 132
           Width = 79
-          Height = 21
+          Height = 24
           TabOrder = 4
         end
         object edtBairro: TEdit
           Left = 16
           Top = 132
           Width = 230
-          Height = 21
+          Height = 24
           TabOrder = 2
         end
         object edtNumero: TEdit
           Left = 16
           Top = 173
           Width = 121
-          Height = 21
+          Height = 24
           NumbersOnly = True
           TabOrder = 5
         end
@@ -371,14 +370,14 @@ object frmPageCliente: TfrmPageCliente
           Left = 484
           Top = 173
           Width = 77
-          Height = 21
+          Height = 24
           TabOrder = 7
         end
         object edtCEP: TMaskEdit
           Left = 16
           Top = 49
           Width = 162
-          Height = 21
+          Height = 24
           EditMask = '#####\-###;0;_'
           MaxLength = 9
           TabOrder = 0
@@ -389,7 +388,7 @@ object frmPageCliente: TfrmPageCliente
         Left = 8
         Top = 32
         Width = 300
-        Height = 21
+        Height = 24
         DataField = 'Nome'
         DataSource = dsrCLIENTE
         TabOrder = 0
@@ -398,7 +397,7 @@ object frmPageCliente: TfrmPageCliente
         Left = 8
         Top = 73
         Width = 264
-        Height = 21
+        Height = 24
         DataField = 'Identidade'
         DataSource = dsrCLIENTE
         TabOrder = 1
@@ -407,7 +406,7 @@ object frmPageCliente: TfrmPageCliente
         Left = 8
         Top = 113
         Width = 147
-        Height = 21
+        Height = 24
         DataField = 'CPF'
         DataSource = dsrCLIENTE
         TabOrder = 2
@@ -416,7 +415,7 @@ object frmPageCliente: TfrmPageCliente
         Left = 8
         Top = 153
         Width = 134
-        Height = 21
+        Height = 24
         DataField = 'Telefone'
         DataSource = dsrCLIENTE
         TabOrder = 3
@@ -425,7 +424,7 @@ object frmPageCliente: TfrmPageCliente
         Left = 8
         Top = 193
         Width = 400
-        Height = 21
+        Height = 24
         DataField = 'Email'
         DataSource = dsrCLIENTE
         TabOrder = 4

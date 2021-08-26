@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.Imaging.pngimage,
+  Vcl.ExtCtrls;
 
 type
   TfrmPagePrincipal = class(TForm)
@@ -13,6 +14,7 @@ type
     Sobre1: TMenuItem;
     Sair1: TMenuItem;
     mmCadCliente: TMenuItem;
+    Image1: TImage;
     procedure Sair1Click(Sender: TObject);
     procedure Sobre1Click(Sender: TObject);
     procedure mmCadClienteClick(Sender: TObject);
