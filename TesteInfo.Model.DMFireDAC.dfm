@@ -65,4 +65,8 @@ object DMFireDAC: TDMFireDAC
       Size = 10
     end
   end
+  object FDStanStorageXMLLink1: TFDStanStorageXMLLink
+    Left = 184
+    Top = 56
+  end
 end

@@ -73,6 +73,7 @@ begin
   FIdSSLIOHandlerSocket := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
   FIdSMTP := TIdSMTP.Create(nil);
   FIdMessage := TIdMessage.Create(nil);
+  FBody := TStringLIst.Create;
 
   FIdSSLIOHandlerSocket.SSLOptions.Method := sslvSSLv23;
   FIdSSLIOHandlerSocket.SSLOptions.Mode := sslmClient;

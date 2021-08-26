@@ -14,8 +14,7 @@ uses
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TfrmPagePrincipal, frmPagePrincipal);
-  Application.CreateForm(TfrmPageCliente, frmPageCliente);
   Application.CreateForm(TDMFireDAC, DMFireDAC);
+  Application.CreateForm(TfrmPagePrincipal, frmPagePrincipal);
   Application.Run;
 end.

@@ -119,6 +119,10 @@ object frmPageCliente: TfrmPageCliente
     object tsPageListagem: TTabSheet
       Caption = 'tsPageListagem'
       TabVisible = False
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Panel3: TPanel
         Left = 0
         Top = 0
@@ -156,7 +160,6 @@ object frmPageCliente: TfrmPageCliente
         Width = 912
         Height = 489
         Align = alClient
-        DataSource = dsrCLIENTE
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -256,7 +259,7 @@ object frmPageCliente: TfrmPageCliente
         Height = 300
         Align = alBottom
         Caption = 'Endere'#231'o'
-        TabOrder = 0
+        TabOrder = 5
         object Label1: TLabel
           Left = 16
           Top = 34
@@ -339,28 +342,28 @@ object frmPageCliente: TfrmPageCliente
           Top = 173
           Width = 337
           Height = 21
-          TabOrder = 7
+          TabOrder = 6
         end
         object edtCidade: TEdit
           Left = 249
           Top = 132
           Width = 230
           Height = 21
-          TabOrder = 4
+          TabOrder = 3
         end
         object edtUF: TEdit
           Left = 482
           Top = 132
           Width = 79
           Height = 21
-          TabOrder = 5
+          TabOrder = 4
         end
         object edtBairro: TEdit
           Left = 16
           Top = 132
           Width = 230
           Height = 21
-          TabOrder = 3
+          TabOrder = 2
         end
         object edtNumero: TEdit
           Left = 16
@@ -368,14 +371,14 @@ object frmPageCliente: TfrmPageCliente
           Width = 121
           Height = 21
           NumbersOnly = True
-          TabOrder = 2
+          TabOrder = 5
         end
         object edtPais: TEdit
           Left = 484
           Top = 173
           Width = 77
           Height = 21
-          TabOrder = 6
+          TabOrder = 7
         end
       end
       object edtNome: TDBEdit
@@ -385,7 +388,7 @@ object frmPageCliente: TfrmPageCliente
         Height = 21
         DataField = 'Nome'
         DataSource = dsrCLIENTE
-        TabOrder = 1
+        TabOrder = 0
       end
       object edtIdentidade: TDBEdit
         Left = 8
@@ -394,7 +397,7 @@ object frmPageCliente: TfrmPageCliente
         Height = 21
         DataField = 'Identidade'
         DataSource = dsrCLIENTE
-        TabOrder = 2
+        TabOrder = 1
       end
       object edtCPF: TDBEdit
         Left = 8
@@ -403,7 +406,7 @@ object frmPageCliente: TfrmPageCliente
         Height = 21
         DataField = 'CPF'
         DataSource = dsrCLIENTE
-        TabOrder = 3
+        TabOrder = 2
       end
       object edtTelefone: TDBEdit
         Left = 8
@@ -412,7 +415,7 @@ object frmPageCliente: TfrmPageCliente
         Height = 21
         DataField = 'Telefone'
         DataSource = dsrCLIENTE
-        TabOrder = 4
+        TabOrder = 3
       end
       object edtEmail: TDBEdit
         Left = 8
@@ -421,13 +424,14 @@ object frmPageCliente: TfrmPageCliente
         Height = 21
         DataField = 'Email'
         DataSource = dsrCLIENTE
-        TabOrder = 5
+        TabOrder = 4
       end
     end
   end
   object dsrCLIENTE: TDataSource
+    DataSet = DMFireDAC.mtbCLIENTE
     OnStateChange = dsrCLIENTEStateChange
-    Left = 820
-    Top = 24
+    Left = 500
+    Top = 104
   end
 end

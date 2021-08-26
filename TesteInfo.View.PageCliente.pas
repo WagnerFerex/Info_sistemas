@@ -24,7 +24,6 @@ type
     dbgListagem: TDBGrid;
     ButtonedEdit1: TButtonedEdit;
     BitBtn1: TBitBtn;
-    dsrCLIENTE: TDataSource;
     btnCancelar: TSpeedButton;
     GroupBox1: TGroupBox;
     Label1: TLabel;
@@ -54,6 +53,7 @@ type
     edtEmail: TDBEdit;
     edtPais: TEdit;
     Label13: TLabel;
+    dsrCLIENTE: TDataSource;
     procedure dsrCLIENTEStateChange(Sender: TObject);
     procedure btnSalvarClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
@@ -85,7 +85,8 @@ uses
   System.MaskUtils,
   System.StrUtils,
   TesteInfo.Model.ViaCEP,
-  TesteInfo.Model.eMail, TesteInfo.Model.Utils;
+  TesteInfo.Model.eMail,
+  TesteInfo.Model.Utils, TesteInfo.Model.DMFireDAC;
 
 
 procedure TfrmPageCliente.btnCancelarClick(Sender: TObject);
@@ -125,16 +126,21 @@ end;
 procedure TfrmPageCliente.btnSalvarClick(Sender: TObject);
 begin
   try
-    FDataSet.FieldByName('CEP').Value         := Trim(edtCEP.Text);
-    FDataSet.FieldByName('Logradouro').Value  := Trim(edtLogradouro.Text);
-    FDataSet.FieldByName('Numero').Value      := Trim(edtNumero.Text);
+    FDataSet.FieldByName('CEP').Value         := NotNULL(edtCEP.Text, 'Informe o CEP');
+    FDataSet.FieldByName('Logradouro').Value  := NotNULL(edtLogradouro.Text, 'Informe o Logradouro');
+    FDataSet.FieldByName('Numero').Value      := NotNULL(edtNumero.Text, 'Informe o Número');
     FDataSet.FieldByName('Complemento').Value := Trim(edtComplemento.Text);
-    FDataSet.FieldByName('Bairro').Value      := Trim(edtBairro.Text);
-    FDataSet.FieldByName('Cidade').Value      := Trim(edtCidade.Text);
-    FDataSet.FieldByName('Estado').Value      := Trim(edtUF.Text);
-    FDataSet.FieldByName('Pais').Value        := Trim(edtPais.Text);
+    FDataSet.FieldByName('Bairro').Value      := NotNULL(edtBairro.Text, );
+    FDataSet.FieldByName('Cidade').Value      := NotNULL(edtCidade.Text);
+    FDataSet.FieldByName('Estado').Value      := NotNULL(edtUF.Text);
+    FDataSet.FieldByName('Pais').Value        := NotNULL(edtPais.Text);
     FDataSet.Post;
     Situacao := stList;
+    HabDesEndereco('', '', '', '', '');
+
+    GerarXML(FDataSet);
+    EnviarEmail();
+
   except
     on E: Exception do
       Application.MessageBox(PChar(E.Message), 'TesteInfo - Informação!', MB_ICONINFORMATION);
@@ -169,14 +175,12 @@ end;
 procedure TfrmPageCliente.EnviarEmail;
 begin
   TModelEmail
-    .New(465, 'smtp.gmail.com', 'sistemadelphi16122020@gmail.com', 'teste16122020*')
-//      .ReplyToAddress('')
-//      .Attachment('Local do arquivo PDF')
-
+    .New(465, 'smtp.gmail.com', 'exampleemail@empresa.com', 'password')
     .Subject('Cadastro de Cliente InfoSistemas')
-    .FromAddress('sistemadelphi16122020@gmail.com')       // remetente
     .FromName('TESTE INFOSISTEMAS')
-    .RecipientsAddress('sistemadelphi16122020@gmail.com') // destinatário
+    .FromAddress('sistemadelphi16122020@gmail.com')         // remetente
+    .ReplyToAddress('sistemadelphi16122020@gmail.com')      // destinatário
+    .Attachment(ExtractFileDir(ParamStr(0))+'\cliente.xml') // Anexo
 
     .AddBody('<html><head><meta content=''text/html; charset=iso-8859-1'' http-equiv=''Content-Type'' />')
     .AddBody('<title>EMAIL AUTOMATICO - Cliente '+ '<NOMECLIENTE>' +'</title> </head>')
