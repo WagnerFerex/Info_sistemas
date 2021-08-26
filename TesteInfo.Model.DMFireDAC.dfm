@@ -24,10 +24,12 @@ object DMFireDAC: TDMFireDAC
     end
     object mtbCLIENTECPF: TStringField
       FieldName = 'CPF'
+      EditMask = '###\.###\.###\-##;0;_'
       Size = 11
     end
     object mtbCLIENTETelefone: TStringField
       FieldName = 'Telefone'
+      EditMask = '!\(##\)####\-####;0;_'
       Size = 10
     end
     object mtbCLIENTEEmail: TStringField

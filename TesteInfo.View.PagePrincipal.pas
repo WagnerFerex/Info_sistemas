@@ -33,7 +33,7 @@ uses TesteInfo.View.PageCliente;
 
 procedure TfrmPagePrincipal.mmCadClienteClick(Sender: TObject);
 begin
-  frmPageCliente := TfrmPageCliente.Create(nil);
+  Application.CreateForm(TfrmPageCliente, frmPageCliente);
   try
     frmPageCliente.ShowModal;
   finally
@@ -48,7 +48,11 @@ end;
 
 procedure TfrmPagePrincipal.Sobre1Click(Sender: TObject);
 begin
-  Application.MessageBox('', 'TesteInfo - Informação!', MB_ICONINFORMATION);
+  Application.MessageBox(
+    'Sistema de Teste - InfoSistemas'+ #13 +
+    'Versão: 1.0'+ #13 +
+    'Desenvolvido por: Wagner Vasconcelos',
+    'TesteInfo - Informação!', MB_ICONINFORMATION);
 end;
 
 end.

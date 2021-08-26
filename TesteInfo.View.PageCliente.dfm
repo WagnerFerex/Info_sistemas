@@ -119,10 +119,6 @@ object frmPageCliente: TfrmPageCliente
     object tsPageListagem: TTabSheet
       Caption = 'tsPageListagem'
       TabVisible = False
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Panel3: TPanel
         Left = 0
         Top = 0
@@ -131,7 +127,7 @@ object frmPageCliente: TfrmPageCliente
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
-        object ButtonedEdit1: TButtonedEdit
+        object edtPESQUISAR: TButtonedEdit
           Left = 7
           Top = 19
           Width = 778
@@ -143,7 +139,7 @@ object frmPageCliente: TfrmPageCliente
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          TextHint = ' Informe o valor a ser pesquisado...'
+          TextHint = ' Informe o nome a ser pesquisado...'
         end
         object BitBtn1: TBitBtn
           Left = 793
@@ -152,6 +148,7 @@ object frmPageCliente: TfrmPageCliente
           Height = 28
           Caption = 'Filtrar'
           TabOrder = 1
+          OnClick = BitBtn1Click
         end
       end
       object dbgListagem: TDBGrid
@@ -160,6 +157,7 @@ object frmPageCliente: TfrmPageCliente
         Width = 912
         Height = 489
         Align = alClient
+        DataSource = dsrCLIENTE
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -13
@@ -187,6 +185,7 @@ object frmPageCliente: TfrmPageCliente
           item
             Expanded = False
             FieldName = 'Identidade'
+            Width = 64
             Visible = True
           end
           item
@@ -199,11 +198,6 @@ object frmPageCliente: TfrmPageCliente
             Expanded = False
             FieldName = 'Email'
             Width = 254
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'Endereco'
             Visible = True
           end>
       end
@@ -269,9 +263,16 @@ object frmPageCliente: TfrmPageCliente
         end
         object SpeedButton7: TSpeedButton
           Left = 185
-          Top = 48
-          Width = 23
-          Height = 22
+          Top = 47
+          Width = 66
+          Height = 23
+          Caption = 'Pesquisar'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
           OnClick = SpeedButton7Click
         end
         object Label2: TLabel
@@ -323,13 +324,6 @@ object frmPageCliente: TfrmPageCliente
           Height = 13
           Caption = 'Pa'#237's'
         end
-        object edtCEP: TEdit
-          Left = 16
-          Top = 48
-          Width = 166
-          Height = 21
-          TabOrder = 0
-        end
         object edtLogradouro: TEdit
           Left = 16
           Top = 90
@@ -379,6 +373,16 @@ object frmPageCliente: TfrmPageCliente
           Width = 77
           Height = 21
           TabOrder = 7
+        end
+        object edtCEP: TMaskEdit
+          Left = 16
+          Top = 49
+          Width = 162
+          Height = 21
+          EditMask = '#####\-###;0;_'
+          MaxLength = 9
+          TabOrder = 0
+          Text = ''
         end
       end
       object edtNome: TDBEdit

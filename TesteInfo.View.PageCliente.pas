@@ -22,12 +22,11 @@ type
     btnNovo: TSpeedButton;
     Panel3: TPanel;
     dbgListagem: TDBGrid;
-    ButtonedEdit1: TButtonedEdit;
+    edtPESQUISAR: TButtonedEdit;
     BitBtn1: TBitBtn;
     btnCancelar: TSpeedButton;
     GroupBox1: TGroupBox;
     Label1: TLabel;
-    edtCEP: TEdit;
     SpeedButton7: TSpeedButton;
     Label2: TLabel;
     edtLogradouro: TEdit;
@@ -54,6 +53,7 @@ type
     edtPais: TEdit;
     Label13: TLabel;
     dsrCLIENTE: TDataSource;
+    edtCEP: TMaskEdit;
     procedure dsrCLIENTEStateChange(Sender: TObject);
     procedure btnSalvarClick(Sender: TObject);
     procedure btnCancelarClick(Sender: TObject);
@@ -63,10 +63,10 @@ type
     procedure btnSairClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure SpeedButton7Click(Sender: TObject);
+    procedure BitBtn1Click(Sender: TObject);
   private
     FSituacao: eSituacao;
     FDataSet: TDataSet;
-    procedure EnviarEmail();
     procedure HabDesEndereco(Logradouro, Complemento, Localidade, UF, Bairro: string);
     procedure SetSituacao(const Value: eSituacao);
     property Situacao: eSituacao read FSituacao write SetSituacao;
@@ -82,12 +82,17 @@ implementation
 {$R *.dfm}
 
 uses
-  System.MaskUtils,
   System.StrUtils,
   TesteInfo.Model.ViaCEP,
-  TesteInfo.Model.eMail,
-  TesteInfo.Model.Utils, TesteInfo.Model.DMFireDAC;
+  TesteInfo.Model.Utils,
+  TesteInfo.Model.DMFireDAC;
 
+
+procedure TfrmPageCliente.BitBtn1Click(Sender: TObject);
+begin
+  dsrCLIENTE.DataSet.Filtered := Trim(edtPESQUISAR.Text) <> '';
+  dsrCLIENTE.DataSet.Filter   := 'Nome like '+ QuotedStr('%'+edtPESQUISAR.Text+'%');
+end;
 
 procedure TfrmPageCliente.btnCancelarClick(Sender: TObject);
 begin
@@ -97,6 +102,17 @@ end;
 
 procedure TfrmPageCliente.btnEditarClick(Sender: TObject);
 begin
+  edtCEP.Text        := FDataSet.FieldByName('CEP').Value;
+  edtNumero.Text     := FDataSet.FieldByName('Numero').Value;
+  edtPais.Text       := FDataSet.FieldByName('Pais').Value;
+
+  HabDesEndereco(
+    FDataSet.FieldByName('Logradouro').Value,
+    FDataSet.FieldByName('Complemento').Value,
+    FDataSet.FieldByName('Cidade').Value,
+    FDataSet.FieldByName('Estado').Value,
+    FDataSet.FieldByName('Bairro').Value);
+
   FDataSet.Edit;
   Situacao := stCrud;
 end;
@@ -125,21 +141,38 @@ end;
 
 procedure TfrmPageCliente.btnSalvarClick(Sender: TObject);
 begin
+  if not eEmail(edtEmail.Text) then
+  begin
+    Application.MessageBox(PChar('E-mail inválido.'), 'TesteInfo - Informação!', MB_ICONINFORMATION);
+    edtEmail.SetFocus;
+    Exit;
+  end;
+
+
   try
+    NotNULL(edtNome.Text, 'Informe o nome.');
+    NotNULL(edtIdentidade.Text, 'Informe a Identidade.');
+    NotNULL(edtCPF.Text, 'Informe o CPF.');
+    NotNULL(edtCPF.Text, 'Informe o Telefone.');
+
     FDataSet.FieldByName('CEP').Value         := NotNULL(edtCEP.Text, 'Informe o CEP');
     FDataSet.FieldByName('Logradouro').Value  := NotNULL(edtLogradouro.Text, 'Informe o Logradouro');
     FDataSet.FieldByName('Numero').Value      := NotNULL(edtNumero.Text, 'Informe o Número');
     FDataSet.FieldByName('Complemento').Value := Trim(edtComplemento.Text);
-    FDataSet.FieldByName('Bairro').Value      := NotNULL(edtBairro.Text, );
-    FDataSet.FieldByName('Cidade').Value      := NotNULL(edtCidade.Text);
-    FDataSet.FieldByName('Estado').Value      := NotNULL(edtUF.Text);
-    FDataSet.FieldByName('Pais').Value        := NotNULL(edtPais.Text);
+    FDataSet.FieldByName('Bairro').Value      := NotNULL(edtBairro.Text, 'Informe o bairro');
+    FDataSet.FieldByName('Cidade').Value      := NotNULL(edtCidade.Text, 'Informe a Cidade');
+    FDataSet.FieldByName('Estado').Value      := NotNULL(edtUF.Text, 'Informe o Estado');
+    FDataSet.FieldByName('Pais').Value        := NotNULL(edtPais.Text, 'Informe o País');
     FDataSet.Post;
     Situacao := stList;
-    HabDesEndereco('', '', '', '', '');
 
-    GerarXML(FDataSet);
-    EnviarEmail();
+    if Application.MessageBox(PChar('Deseja receber um e-mail com registro incluído?'),
+      'Confirmação - InfoSistemas', MB_ICONQUESTION + MB_YESNO + MB_DEFBUTTON2) = idYes
+    then
+    begin
+      GerarXML(FDataSet);
+      EnviarEmail(FDataSet);
+    end;
 
   except
     on E: Exception do
@@ -151,7 +184,16 @@ procedure TfrmPageCliente.dsrCLIENTEStateChange(Sender: TObject);
 begin
   case FDataSet.State of
     dsInactive: ;
-    dsBrowse: ;
+    dsBrowse: begin
+      edtCEP.Clear;
+      edtNumero.Clear;
+      edtComplemento.Clear;
+      edtPais.Clear;
+      edtLogradouro.Clear;
+      edtCidade.Clear;
+      edtUF.Clear;
+      edtBairro.Clear;
+    end;
     dsEdit: ;
     dsInsert: ;
     dsSetKey: ;
@@ -172,36 +214,6 @@ begin
   btnCancelar.Enabled := (FDataSet.State in [dsInsert, dsEdit]) and (not dsrCLIENTE.DataSet.IsEmpty);
 end;
 
-procedure TfrmPageCliente.EnviarEmail;
-begin
-  TModelEmail
-    .New(465, 'smtp.gmail.com', 'exampleemail@empresa.com', 'password')
-    .Subject('Cadastro de Cliente InfoSistemas')
-    .FromName('TESTE INFOSISTEMAS')
-    .FromAddress('sistemadelphi16122020@gmail.com')         // remetente
-    .ReplyToAddress('sistemadelphi16122020@gmail.com')      // destinatário
-    .Attachment(ExtractFileDir(ParamStr(0))+'\cliente.xml') // Anexo
-
-    .AddBody('<html><head><meta content=''text/html; charset=iso-8859-1'' http-equiv=''Content-Type'' />')
-    .AddBody('<title>EMAIL AUTOMATICO - Cliente '+ '<NOMECLIENTE>' +'</title> </head>')
-    .AddBody('<body bgcolor=''#FFFFFF''>')
-    .AddBody('<p><b> Nome : </b>' + '<NOME_CLIENTE>')
-    .AddBody('<p><b> CPF : </b>' + FormatMaskText('999.999.999-99;0;_', '<CPF_CLIENTE>'))
-    .AddBody('<p><b> Identidade : </b>' + '<RG_CLIENTE>')
-    .AddBody('<p><b> DDD : </b>' + '<DDD>')
-    .AddBody('<p><b> Telefone : </b>' + FormatMaskText('99999-9999;0;_', '<TELEFONE>'))
-    .AddBody('<p><b> E-mail : </b>' + '<EMAIL>')
-    .AddBody('<p><b> CEP : </b>' + FormatMaskText('99.999-999;0;_', '<CEP>'))
-    .AddBody('<p><b> Logradouro : </b>' + '<LOGRADOURO>')
-    .AddBody('<p><b> Número : </b>' + 'NUMERO')
-    .AddBody('<p><b> Complemento : </b>' + 'COMPLEMENTO')
-    .AddBody('<p><b> Bairro : </b>' + '<BAIRRO>')
-    .AddBody('<p><b> Cidade : </b>' + 'CIDADE')
-    .AddBody('<p><b> Estado : </b>' + 'ESTADO')
-    .AddBody('<p><b> País : </b>' + 'PAIS')
-    .AddBody('</body></html>').Send;
-end;
-
 procedure TfrmPageCliente.FormShow(Sender: TObject);
 begin
   pcPrincipal.ActivePage := tsPageListagem;
@@ -211,25 +223,25 @@ end;
 
 procedure TfrmPageCliente.HabDesEndereco(Logradouro, Complemento, Localidade, UF, Bairro: string);
 begin
-  edtLogradouro.Enabled := Trim(Logradouro).IsEmpty;
-  edtLogradouro.Text    := IfThen(Logradouro <> '', Trim(Logradouro));
-  edtLogradouro.Color   := iif(Logradouro <> '', clBtnFace, clWhite);
+  edtLogradouro.Enabled  := Trim(Logradouro).IsEmpty;
+  edtLogradouro.Text     := IfThen(Logradouro <> '', Trim(Logradouro));
+  edtLogradouro.Color    := iif(Logradouro <> '', clBtnFace, clWhite);
 
   edtComplemento.Enabled := Trim(Complemento).IsEmpty;
   edtComplemento.Text    := IfThen(Complemento <> '', Trim(Complemento));
   edtComplemento.Color   := iif(Complemento <> '', clBtnFace, clWhite);
 
-  edtCidade.Enabled := Trim(Localidade).IsEmpty;
-  edtCidade.Text    := IfThen(Localidade <> '', Trim(Localidade));
-  edtCidade.Color   := iif(Localidade <> '', clBtnFace, clWhite);
+  edtCidade.Enabled      := Trim(Localidade).IsEmpty;
+  edtCidade.Text         := IfThen(Localidade <> '', Trim(Localidade));
+  edtCidade.Color        := iif(Localidade <> '', clBtnFace, clWhite);
 
-  edtUF.Enabled := Trim(UF).IsEmpty;
-  edtUF.Text    := IfThen(UF <> '', Trim(UF));
-  edtUF.Color   := iif(UF <> '', clBtnFace, clWhite);
+  edtUF.Enabled          := Trim(UF).IsEmpty;
+  edtUF.Text             := IfThen(UF <> '', Trim(UF));
+  edtUF.Color            := iif(UF <> '', clBtnFace, clWhite);
 
-  edtBairro.Enabled := Trim(Bairro).IsEmpty;
-  edtBairro.Text    := IfThen(Bairro <> '', Trim(Bairro));
-  edtBairro.Color   := iif(Bairro <> '', clBtnFace, clWhite);
+  edtBairro.Enabled      := Trim(Bairro).IsEmpty;
+  edtBairro.Text         := IfThen(Bairro <> '', Trim(Bairro));
+  edtBairro.Color        := iif(Bairro <> '', clBtnFace, clWhite);
 end;
 
 procedure TfrmPageCliente.SetSituacao(const Value: eSituacao);

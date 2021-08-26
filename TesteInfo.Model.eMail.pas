@@ -161,7 +161,7 @@ end;
 
 procedure TModelEmail.SetMailParams;
 begin
-  if Trim(FReplyToAddress) = '' then
+  if Trim(FRecipientsAddress) = '' then
     raise Exception.Create('Sem destinatario.');
 
   if Trim(FSubject) = '' then
